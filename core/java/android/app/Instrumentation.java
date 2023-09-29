@@ -65,6 +65,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
+import com.android.internal.util.GamesPropsUtils;
+
 /**
  * Base class for implementing application instrumentation code.  When running
  * with instrumentation turned on, this class will be instantiated for you
@@ -1238,15 +1240,16 @@ public class Instrumentation {
      * @return The newly instantiated Application object.
      */
     public Application newApplication(ClassLoader cl, String className, Context context)
-            throws InstantiationException, IllegalAccessException, 
+            throws InstantiationException, IllegalAccessException,
             ClassNotFoundException {
         Application app = getFactory(context.getPackageName())
                 .instantiateApplication(cl, className);
         app.attach(context);
         PropImitationHooks.setProps(context);
+        GamesPropsUtils.setProps(app);
         return app;
     }
-    
+
     /**
      * Perform instantiation of the process's {@link Application} object.  The
      * default implementation provides the normal system behavior.
@@ -1262,6 +1265,7 @@ public class Instrumentation {
         Application app = (Application)clazz.newInstance();
         app.attach(context);
         PropImitationHooks.setProps(context);
+        GamesPropsUtils.setProps(app);
         return app;
     }
 
