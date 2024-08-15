@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 The Android Open Source Project
+ * Copyright (C) 2024 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package com.android.internal.util;
 
-import android.app.Application;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
@@ -41,9 +41,15 @@ public class GamesPropsUtils {
 
         propsToChange.put("F4", createF4Props());
         packagesToChange.put("F4", new String[]{
-                "com.dts.freefiremax",
-                "com.dts.freefireth",
                 "com.mobile.legends"
+        });
+
+        propsToChange.put("iQ11", createiQ11Props());
+        packagesToChange.put("iQ11", new String[]{
+                "com.tencent.KiHan",
+                "com.tencent.tmgp.cf",
+                "com.tencent.tmgp.cod",
+                "com.tencent.tmgp.gnyx"
         });
 
         propsToChange.put("MI11T", createMI11TProps());
@@ -58,25 +64,25 @@ public class GamesPropsUtils {
                 "com.tencent.tmgp.sgame"
         });
 
+        propsToChange.put("NX729J", createNX729JProps());
+        packagesToChange.put("NX729J", new String[]{
+                "com.YoStar.AetherGazer"
+        });
+
         propsToChange.put("OP8P", createOP8PProps());
         packagesToChange.put("OP8P", new String[]{
                 "com.netease.lztgglobal",
-                "com.pubg.imobile",
-                "com.pubg.krmobile",
-                "com.rekoo.pubgm",
                 "com.riotgames.league.wildrift",
                 "com.riotgames.league.wildrifttw",
-                "com.riotgames.league.wildriftvn",
-                "com.tencent.ig",
-                "com.tencent.tmgp.pubgmhd",
-                "com.vng.pubgmobile"
+                "com.riotgames.league.wildriftvn"
         });
 
         propsToChange.put("OP9P", createOP9PProps());
         packagesToChange.put("OP9P", new String[]{
                 "com.epicgames.fortnite",
                 "com.epicgames.portal",
-                "com.tencent.lolm"
+                "com.tencent.lolm",
+                "jp.konami.pesam"
         });
 
         propsToChange.put("ROG3", createROG3Props());
@@ -89,13 +95,27 @@ public class GamesPropsUtils {
         propsToChange.put("ROG6", createROG6Props());
         packagesToChange.put("ROG6", new String[]{
                 "com.activision.callofduty.shooter",
-                "com.madfingergames.legends"
+                "com.gameloft.android.ANMP.GloftA9HM",
+                "com.madfingergames.legends",
+                "com.riotgames.league.teamfighttactics",
+                "com.riotgames.league.teamfighttacticstw",
+                "com.riotgames.league.teamfighttacticsvn"
+        });
+
+        propsToChange.put("ROG8", createROG8Props());
+        packagesToChange.put("ROG8", new String[]{
+                "com.pubg.imobile",
+                "com.pubg.krmobile",
+                "com.rekoo.pubgm",
+                "com.tencent.ig",
+                "com.tencent.tmgp.pubgmhd",
+                "com.vng.pubgmobile"
         });
 
         propsToChange.put("XP5", createXP5Props());
         packagesToChange.put("XP5", new String[]{
-                "com.tencent.tmgp.kr.codm",
                 "com.garena.game.codm",
+                "com.tencent.tmgp.kr.codm",
                 "com.vng.codmvn"
         });
     }
@@ -116,6 +136,14 @@ public class GamesPropsUtils {
         return props;
     }
 
+    private static Map<String, Object> createiQ11Props() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("BRAND", "vivo");
+        props.put("MANUFACTURER", "vivo");
+        props.put("MODEL", "V2243A");
+        return props;
+    }
+
     private static Map<String, Object> createMI11TProps() {
         Map<String, Object> props = new HashMap<>();
         props.put("BRAND", "Xiaomi");
@@ -132,9 +160,19 @@ public class GamesPropsUtils {
         return props;
     }
 
+    private static Map<String, Object> createNX729JProps() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("BRAND", "nubia");
+        props.put("DEVICE", "NX729J");
+        props.put("MANUFACTURER", "nubia");
+        props.put("MODEL", "NX729J");
+        return props;
+    }
+
     private static Map<String, Object> createOP8PProps() {
         Map<String, Object> props = new HashMap<>();
         props.put("BRAND", "OnePlus");
+        props.put("DEVICE", "OnePlus8Pro");
         props.put("MANUFACTURER", "OnePlus");
         props.put("MODEL", "IN2020");
         return props;
@@ -143,6 +181,7 @@ public class GamesPropsUtils {
     private static Map<String, Object> createOP9PProps() {
         Map<String, Object> props = new HashMap<>();
         props.put("BRAND", "OnePlus");
+        props.put("DEVICE", "OnePlus9Pro");
         props.put("MANUFACTURER", "OnePlus");
         props.put("MODEL", "LE2101");
         return props;
@@ -164,6 +203,14 @@ public class GamesPropsUtils {
         return props;
     }
 
+    private static Map<String, Object> createROG8Props() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("BRAND", "asus");
+        props.put("MANUFACTURER", "asus");
+        props.put("MODEL", "ASUS_AI2401_A");
+        return props;
+    }
+
     private static Map<String, Object> createXP5Props() {
         Map<String, Object> props = new HashMap<>();
         props.put("BRAND", "Sony");
@@ -172,8 +219,8 @@ public class GamesPropsUtils {
         return props;
     }
 
-    public static void setProps(Application app) {
-        final String packageName = app.getPackageName();
+    public static void setProps(Context context) {
+        final String packageName = context.getPackageName();
 
         if (packageName == null || packageName.isEmpty()) {
             return;
