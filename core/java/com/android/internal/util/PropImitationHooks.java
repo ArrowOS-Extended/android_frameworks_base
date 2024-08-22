@@ -49,6 +49,7 @@ public class PropImitationHooks {
     private static final String PROCESS_GMS_UNSTABLE = PACKAGE_GMS + ".unstable";
     private static final String PACKAGE_GPHOTOS = "com.google.android.apps.photos";
     private static final String PACKAGE_NETFLIX = "com.netflix.mediaclient";
+    private static final String PROP_HOOKS = "persist.sys.pihooks_";
 
     private static final String PROP_SECURITY_PATCH = "persist.sys.pihooks.security_patch";
     private static final String PROP_FIRST_API_LEVEL = "persist.sys.pihooks.first_api_level";
@@ -63,6 +64,18 @@ public class PropImitationHooks {
         "PRODUCT", "marlin",
         "MODEL", "Pixel XL",
         "FINGERPRINT", "google/marlin/marlin:10/QP1A.191005.007.A3/5972272:user/release-keys"
+    );
+
+    private static final Set<String> piHooksProps = Set.of(
+        "BRAND",
+        "MANUFACTURER",
+        "DEVICE",
+        "PRODUCT",
+        "MODEL",
+        "FINGERPRINT",
+        "ID",
+        "SECURITY_PATCH",
+        "DEVICE_INITIAL_SDK_INT"
     );
 
     private static final Set<String> sFeatureBlacklist = Set.of(
@@ -175,20 +188,42 @@ public class PropImitationHooks {
         }
     }
 
-    private static void setCertifiedProps() {
-        for (String entry : sCertifiedProps) {
-            // Each entry must be of the format FIELD:value
-            final String[] fieldAndProp = entry.split(":", 2);
-            if (fieldAndProp.length != 2) {
-                Log.e(TAG, "Invalid entry in certified props: " + entry);
-                continue;
+private static void setCertifiedProps() {
+    boolean areAllRequiredKeysPresent = false;
+    boolean customPifEnabled = Boolean.parseBoolean(SystemProperties.get("persist.sys.custom_pif", "false"));
+    
+    if (customPifEnabled) {
+        dlog("Custom PIF enabled");
+        areAllRequiredKeysPresent = true; // Assume true and check each key below
+        for (String key : piHooksProps) {
+            String value = SystemProperties.get(PROP_HOOKS + key);
+            if (value == null || value.isEmpty()) {
+                areAllRequiredKeysPresent = false;
+                Log.e(TAG, "Missing value for key: " + key + ". Falling back to default.");
+                break;
             }
-            setPropValue(fieldAndProp[0], fieldAndProp[1]);
         }
-        setSystemProperty(PROP_SECURITY_PATCH, Build.VERSION.SECURITY_PATCH);
-        setSystemProperty(PROP_FIRST_API_LEVEL,
-                Integer.toString(Build.VERSION.DEVICE_INITIAL_SDK_INT));
     }
+
+    for (String entry : sCertifiedProps) {
+        final String[] fieldAndProp = entry.split(":", 2);
+        
+        if (areAllRequiredKeysPresent && piHooksProps.contains(fieldAndProp[0])) {
+            setPropValue(fieldAndProp[0], SystemProperties.get(PROP_HOOKS + fieldAndProp[0]));
+            continue;
+        }
+        
+        if (fieldAndProp.length != 2) {
+            Log.e(TAG, "Invalid entry in certified props: " + entry);
+            continue;
+        }
+        
+        setPropValue(fieldAndProp[0], fieldAndProp[1]);
+    }
+    
+    setSystemProperty(PROP_SECURITY_PATCH, Build.VERSION.SECURITY_PATCH);
+    setSystemProperty(PROP_FIRST_API_LEVEL, Integer.toString(Build.VERSION.DEVICE_INITIAL_SDK_INT));
+}
 
     private static void setSystemProperty(String name, String value) {
         try {
