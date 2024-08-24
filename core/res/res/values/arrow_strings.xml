@@ -47,4 +47,8 @@
     <string name="poweroff_alarm_title">Power off alarm set</string>
     <string name="poweroff_alarm_body">An alarm was detected and the device will power on 2 minutes before it\'s due</string>
 
+     <!-- System Reboot -->
+    <string name="system_restart_title">System restart required</string>
+    <string name="system_restart_message">For all the changes to take effect, a system restart is required. Perform system restart now?</string>
+
 </resources>
