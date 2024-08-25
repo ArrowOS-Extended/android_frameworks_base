@@ -31,30 +31,30 @@ import com.android.internal.statusbar.IStatusBarService;
 
 import java.lang.ref.WeakReference;
 
-public class SystemRestartUtils {
+public class SystemRebootUtils {
 
-    private static final int RESTART_TIMEOUT = 1000;
+    private static final int REBOOT_TIMEOUT = 1000;
 
-    public static void showSystemRestartDialog(Context context) {
+    public static void showSystemRebootDialog(Context context) {
         new AlertDialog.Builder(context)
-                .setTitle(R.string.system_restart_title)
-                .setMessage(R.string.system_restart_message)
-                .setPositiveButton(R.string.ok, (dialog, id) -> {
+                .setTitle(R.string.system_reboot_title)
+                .setMessage(R.string.system_reboot_message)
+                .setPositiveButton(R.string.reboot_title, (dialog, id) -> {
                     Handler handler = new Handler();
-                    handler.postDelayed(() -> restartSystem(context), RESTART_TIMEOUT);
+                    handler.postDelayed(() -> rebootSystem(context), REBOOT_TIMEOUT);
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
     }
 
-    public static void restartSystem(Context context) {
-        new RestartSystemTask(context).execute();
+    public static void rebootSystem(Context context) {
+        new RebootSystemTask(context).execute();
     }
 
-    private static class RestartSystemTask extends AsyncTask<Void, Void, Void> {
+    private static class RebootSystemTask extends AsyncTask<Void, Void, Void> {
         private final WeakReference<Context> mContext;
 
-        RestartSystemTask(Context context) {
+        RebootSystemTask(Context context) {
             mContext = new WeakReference<>(context);
         }
 
@@ -65,7 +65,7 @@ public class SystemRestartUtils {
                         ServiceManager.getService(Context.STATUS_BAR_SERVICE));
                 if (mBarService != null) {
                     try {
-                        Thread.sleep(RESTART_TIMEOUT);
+                        Thread.sleep(REBOOT_TIMEOUT);
                         mBarService.reboot(false);
                     } catch (RemoteException | InterruptedException e) {
                         e.printStackTrace();
