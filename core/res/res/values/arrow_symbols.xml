@@ -61,8 +61,8 @@
     <java-symbol type="string" name="reboot_to_bootloader_message" />
     <java-symbol type="string" name="reboot_title" />
     <java-symbol type="string" name="reboot_message" />
-    <java-symbol type="string" name="system_restart_title" />
-    <java-symbol type="string" name="system_restart_message" />
+    <java-symbol type="string" name="system_reboot_title" />
+    <java-symbol type="string" name="system_reboot_message" />
 
     <!-- Battery Leds -->
     <java-symbol type="bool" name="config_intrusiveBatteryLed" />
