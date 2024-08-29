@@ -50,6 +50,7 @@ public class PropImitationHooks {
     private static final String PACKAGE_GPHOTOS = "com.google.android.apps.photos";
     private static final String PACKAGE_NETFLIX = "com.netflix.mediaclient";
     private static final String PROP_HOOKS = "persist.sys.pihooks_";
+    private static final String SPOOF_GPHOTOS = "persist.sys.pihooks_gphotos";
 
     private static final String PROP_SECURITY_PATCH = "persist.sys.pihooks.security_patch";
     private static final String PROP_FIRST_API_LEVEL = "persist.sys.pihooks.first_api_level";
@@ -114,7 +115,7 @@ public class PropImitationHooks {
         sCertifiedProps = res.getStringArray(R.array.config_certifiedBuildProperties);
         sStockFp = res.getString(R.string.config_stockFingerprint);
         sNetflixModel = res.getString(R.string.config_netflixSpoofModel);
-        sSpoofPhotos = res.getBoolean(R.bool.config_spoofGooglePhotos);
+        sSpoofPhotos = Boolean.parseBoolean(SystemProperties.get(SPOOF_GPHOTOS, "true"));
 
         sProcessName = processName;
         sIsGms = packageName.equals(PACKAGE_GMS) && processName.equals(PROCESS_GMS_UNSTABLE);
